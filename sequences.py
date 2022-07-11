@@ -45,9 +45,14 @@ print("found", found)
 duplicateds = ["z", "a", "b", "b", "a", 1, "a", 1, "z", 9]
 uniques = set(duplicateds)
 print(uniques)
+s1 = {'t', 'x', 'y', 'z', 'q'}
+s2 = {'y', 'x', 'w', 'z'}
 # diff of 1st set to 2nd one:
-diff = {'t', 'x', 'y', 'z', 'q'} - {'y', 'x', 'w', 'z'}
+diff = s1 - s2
 print(diff)
+# union
+united_set = s1 | s2
+print(united_set)
 
 # this is a good library for computing time
 from time import perf_counter as pc

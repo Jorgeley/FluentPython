@@ -20,6 +20,7 @@ def save_flag(img, filename):
     path = os.path.join(DEST_DIR, filename)
     with open(path, 'wb') as fp:
         fp.write(img)
+        # fp.write(img * 500000)  # making the file 500000 times bigger to simulate heavy download
 
 
 def get_flag(cc):

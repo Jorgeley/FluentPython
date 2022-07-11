@@ -23,7 +23,10 @@ print(g)
 next(g)
 next(g)
 next(g)
-# next(g)  # this will trigger StopIteration exception
+try:
+    next(g)  # this will trigger StopIteration exception
+except StopIteration as e:
+    print(f'stopped {e}')
 print([g * 2 for g in simple_generator()])  # we can iterate the whole generator, of course
 
 # itertools have some built-in useful generators
