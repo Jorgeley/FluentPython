@@ -1,7 +1,8 @@
 # SuperFastPython.com
 # example benchmark data transfer between threads
+from multiprocessing import set_start_method, Manager
 from time import time
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import ThreadPool, Pool
 from queue import Queue
 
 
@@ -69,3 +70,13 @@ if __name__ == '__main__':
     # report estimated time per task
     per_task = duration / n_repeats
     print(f'About {per_task:.3} seconds per task')
+
+"""
+***** BENCHMARK (MacBook Pro, 6-Core Intel Core i7 2.6 GHz, 16 GB RAM) *******
+- Process Data Sharing:
+    - Total = 223s
+    - Per Task = 0.223s
+- Thread Data Sharing:
+    - Total = 64.1s
+    - Per Task = 0.0641s
+"""
