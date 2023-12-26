@@ -7,7 +7,7 @@ run from command line: bobo -f api.py
 """
 
 
-@bobo.query('/')
+@bobo.query("/")
 def hello():
     # http://localhost:8080/
     return "hello world"

@@ -15,6 +15,7 @@ def make_averager_hof():
         series.append(new_value)
         total = sum(series)
         return total / len(series)
+
     # end of closure
 
     return averager

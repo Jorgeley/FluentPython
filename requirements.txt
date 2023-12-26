@@ -1,0 +1,7 @@
+ndjson==0.3.1
+bobo==2.4.0
+flask==2.3.2
+mysql-connector-python==8.0.33
+psycopg2==2.9.6
+memory_profiler==0.61.0
+httpx[http2]==0.24.1

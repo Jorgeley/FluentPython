@@ -1,15 +1,16 @@
 import asyncio
+
 import aiohttp
 
-from threads import save_flag, BASE_URL, show, main
+from threads import BASE_URL, main, save_flag, show
 
 
 async def download_one(cc):
-    url = '{}/{cc}/{cc}.gif'.format(BASE_URL, cc=cc.lower())
+    url = "{}/{cc}/{cc}.gif".format(BASE_URL, cc=cc.lower())
     async with aiohttp.request("GET", url) as resp:
         image = await resp.read()
         show(cc)
-        save_flag(image, cc.lower() + '.gif')
+        save_flag(image, cc.lower() + ".gif")
 
 
 def download_many(cc_list):
@@ -21,5 +22,5 @@ def download_many(cc_list):
     return len(res)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(download_many)

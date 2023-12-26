@@ -3,35 +3,19 @@ from abc import ABC, abstractmethod
 
 
 class ItemMenuInterface(ABC):
-
     @abstractmethod
     def get_items(self) -> []:
         raise NotImplementedError("implement get_items()")
 
 
 class ExploreMenu(ItemMenuInterface):
-
     class Query1Menu(ItemMenuInterface):
-
         def get_items(self) -> [ItemMenuInterface]:
-            return [
-                "Query1",
-                [
-                    "item 1",
-                    "item 2"
-                ]
-            ]
+            return ["Query1", ["item 1", "item 2"]]
 
     class Query2Menu(ItemMenuInterface):
-
         def get_items(self) -> [ItemMenuInterface]:
-            return [
-                "Query2",
-                [
-                    "item 1",
-                    "item 2"
-                ]
-            ]
+            return ["Query2", ["item 1", "item 2"]]
 
     def get_items(self) -> [ItemMenuInterface]:
         return [
