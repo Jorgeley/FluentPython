@@ -6,6 +6,7 @@ import ndjson
 import psycopg2
 import requests
 from flask import Flask, stream_with_context
+from flask_cors import CORS, cross_origin
 
 """
 The main difference of JSON and NDJSON (New Line Delimited JSON) is the
@@ -64,13 +65,14 @@ app = Flask(__name__)
 
 
 @app.route("/stream-ndjson-file")
+@cross_origin()
 def stream_ndjson_file():
     @stream_with_context
     def ndjson_line_generator():
         with open(ndjson_file) as f:
             reader = ndjson.reader(f)
             for line in reader:
-                time.sleep(0.2)  # just to see the streaming slowly
+                time.sleep(1)  # just to see the streaming slowly
                 # (remove it in a real app of course)
                 yield json.dumps(line)
 
@@ -84,48 +86,67 @@ def stream_ndjson_file():
 
 
 conn = psycopg2.connect(
-    "host=localhost port=5002 dbname=dbname user=postgres password=pass"
+    "host=localhost port=5002 dbname=xchango user=postgres password=25012023"
 )
 
+
+def create_table():
+    with conn.cursor() as c:
+        c.execute(
+            "CREATE TABLE IF NOT EXISTS users ("
+                "uuid VARCHAR,"
+                "first_name VARCHAR,"
+                "last_name VARCHAR,"
+                "email VARCHAR,"
+                "password VARCHAR"
+            ") "
+        )
+        print("table created")
+        conn.commit()
 
 def generate_random_data():
     conn.autocommit = False
     import hashlib
 
     with conn.cursor() as c:
-        for i in range(1000_000):
+        for i in range(10_000):
             md5 = hashlib.md5(f"{i}".encode()).hexdigest()
             c.execute(
                 "INSERT INTO users (uuid, first_name, last_name, email, "
                 "password) "
                 f"VALUES('{md5}', 'f{i}', 'l{1}', 'e{1}@test.com', 'pass{i}')"
             )
+            print('.', end='', flush=True)
+        print("data inserted")
     conn.commit()
 
-
+# create_table()  # comment this after running 1st time to avoid the overload
 # generate_random_data()  # comment this after running 1st time to avoid the
-# overload
+                          # overload
 @app.route("/stream-ndjson-db")
+@cross_origin()
 def stream_ndjson_db():
     @stream_with_context
     def ndjson_record_generator():
-        for id, uuid, first_name, last_name, email, password in cursor:
-            yield json.dumps(
-                {
-                    "id": id,
-                    "uuid": uuid,
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "email": email,
-                    "password": password,
-                }
-            ) + "\n"
-
-    cursor = conn.cursor("user")
-    cursor.itersize = 1
-    while True:
-        cursor.execute('SELECT * FROM "users" LIMIT 100000')
-        return ndjson_record_generator()
+        with conn.cursor() as cursor:
+            """
+            itersize: should be a value to balance the network calls X memory.
+            i.e.: if we have 100 rows, itersize=2 results in 50 network calls.
+            """
+            cursor.itersize = 1
+            cursor.execute('SELECT * FROM "users" LIMIT 10000')
+            for uuid, first_name, last_name, email, password in cursor:
+                time.sleep(0.5)
+                yield json.dumps(
+                    {
+                        "uuid": uuid,
+                        "first_name": first_name,
+                        "last_name": last_name,
+                        "email": email,
+                        "password": password,
+                    }
+                ) + "\n"
+    return ndjson_record_generator()
 
 
 """

@@ -271,7 +271,7 @@ def do_something_else(f):
         print(
             "doing something else with args or kwargs",
             instance,
-            args[0],
+            args,
             kwargs
         )
         return f(*args)

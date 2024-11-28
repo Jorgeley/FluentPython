@@ -41,7 +41,7 @@ def sender(connection):
     for i in range(10):
         value = random()
         # send data
-        print(f"sending {value}")
+        print(f"sending {value}", flush=True)
         connection.send(value)
     connection.send(None)
     print('Sender: Done', flush=True)
